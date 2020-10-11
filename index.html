@@ -1,0 +1,186 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rydeum Wallet</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <style>
+        #container {
+            position: absolute;
+            left: 20%;
+            top: 15%
+        }
+
+        .divider {
+            margin: 40px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-wrapper light-blue accent-3">
+            <a href="#!" class="brand-logo center light-blue-text text-lighten-5"> Rydeum Wallet</a>
+        </div>
+    </nav>
+
+
+    <div class="row" id="container">
+        <form class="col s12">
+            <div class="row">
+                    <div class="input-field col s12">
+                            <i class="material-icons prefix">drive_eta</i>
+                            <input id="fromAddress" type="text" class="validate"></input>
+                            <label for="fromAddress">Rider Wallet Address from where tokens will be sent</label>
+                        </div>
+
+                        <div class="input-field col s12">
+                                <i class="material-icons prefix">vpn_key</i>
+                                <input id="privateKey" type="text" class="validate"></input>
+                                <label for="privateKey">Private key for Rider Wallet Address</label>
+                            </div>
+
+
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">mode_edit</i>
+                    <input id="amount" type="number" class="validate"></input>
+                    <label for="amount">Amount to send</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">drive_eta</i>
+                    <input id="Daddress" type="text" class="validate"></input>
+                    <label for="Daddress">Driver Wallet Address. Will recieve 60% funds</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">card_travel</i>
+                    <input id="Oaddress" type="text" class="validate"></input>
+                    <label for="Oaddress">Operator Wallet Address. Will recieve 20% funds</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">store</i>
+                    <input id="Raddress" type="text" class="validate"></input>
+                    <label for="Raddress">Rydeum Wallet Address. Will recieve 20% funds</label>
+                </div>
+            </div>
+            <button type="button" id="submit" class="btn waves-effect waves-light">Send
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+
+        <div class="col s12 m6">
+            <div class="card green lighten-3">
+                <div class="card-content black-text">
+                    <span class="card-title">Etherscan Link</span>
+                    <div class="progress" id="loader" style="display:none">
+                        <div class="indeterminate"></div>
+                    </div>
+
+
+                    <h5><a id="etherscan1"></a></h5>
+                    <h5><a id="etherscan2"></a></h5>
+                    <h5><a id="etherscan3"></a></h5>
+                </div>
+
+            </div>
+        </div>
+
+        <form class="col s12">
+            <div class="row">
+            </div>
+        </form>
+        <div class="col s12 m12">
+                <div class="divider"></div>
+            <div class="card green lighten-3">
+                <div class="card-content black-text">
+                    <span class="card-title">Ethereum Wallet Address and Private Key</span>
+                    <div class="progress" id="loaderAdd" style="display:none">
+                        <div class="indeterminate"></div>
+                    </div>
+
+
+                    <h5>
+                        <div> Address : </div>
+                        <div id="ethAddress"></div>
+                    </h5>
+                    <h5>
+                        <div> PrivateKey : </div>
+                        <div id="ethPrivateKey"></div>
+                    </h5>
+                </div>
+
+            </div>
+            <button type="button" id="submitAdd" class="btn waves-effect waves-light">Get wallet
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector("#submit").addEventListener("click", async () => {
+
+            document.querySelector("#loader").style.display = "block"
+
+            const serverUrl = "send"
+            const amount = document.querySelector("#amount").value
+            const Daddress = document.querySelector("#Daddress").value
+            const Oaddress = document.querySelector("#Oaddress").value
+            const Raddress = document.querySelector("#Raddress").value
+            const fromAddress = document.querySelector("#fromAddress").value
+            const privateKey = document.querySelector("#privateKey").value
+
+            let fetchUrl = serverUrl + "?amount=" + amount + "&fromAddress=" + fromAddress +"&fromPrivateKey=" + privateKey +"&Daddress=" + Daddress + "&Oaddress=" + Oaddress + "&Raddress=" + Raddress;
+            console.log(fetchUrl);
+
+            promiseData = await fetch(fetchUrl);
+            jsonData = await promiseData.json();
+
+            etherscan1 = jsonData.etherscan1
+            document.querySelector("#etherscan1").textContent = etherscan1;
+            document.querySelector("#etherscan1").href = etherscan1;
+
+            etherscan2 = jsonData.etherscan2
+            document.querySelector("#etherscan2").textContent = etherscan2;
+            document.querySelector("#etherscan2").href = etherscan2;
+
+            etherscan3 = jsonData.etherscan3
+            document.querySelector("#etherscan3").textContent = etherscan3;
+            document.querySelector("#etherscan3").href = etherscan3;
+
+            document.querySelector("#loader").style.display = "none"
+        })
+    </script>
+
+    <script>
+        document.querySelector("#submitAdd").addEventListener("click", async () => {
+
+            document.querySelector("#loaderAdd").style.display = "block"
+
+            const serverUrl = "createAdd"
+
+            let fetchUrl = serverUrl
+
+            promiseData = await fetch(fetchUrl);
+            jsonData = await promiseData.json();
+
+            ethAddress = jsonData.ethWallet.address
+            ethPrivateKey = jsonData.ethWallet.privateKey
+            document.querySelector("#ethAddress").textContent = ethAddress;
+            document.querySelector("#ethPrivateKey").textContent = ethPrivateKey;
+
+            document.querySelector("#loaderAdd").style.display = "none"
+        })
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+</body>
+
+</html>
